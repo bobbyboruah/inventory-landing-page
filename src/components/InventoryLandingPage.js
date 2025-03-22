@@ -26,7 +26,7 @@ const toggleMenu = (menu) => {
       {/* Header Banner */}
       <div className="banner">
       <img src="/logo.png" alt="Pentana Solutions" className="banner-logo" />
-        <h1 className="banner-text">Inventory Landing Page</h1>
+        <h1 className="banner-text">Power Inventory Landing Page</h1>
       </div>
 
       {/* Main Content with Three Sections */}
