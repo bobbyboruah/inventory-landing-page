@@ -4,9 +4,72 @@ import InventorySnapshotChart from "./InventorySnapshotChart";
 import OrderFulfillmentPieChart from "./OrderFulfillmentPieChart";
 import StockMovementLineChart from "./StockMovementLineChart";
 import FinancialMetricsTable from "./FinancialMetricsTable";
+
 const InventoryLandingPage = () => {
 const [activeMenu, setActiveMenu] = useState(null);
 const [selectedKPI, setSelectedKPI] = useState([]); // ✅ Support multiple selections
+const [showSupplierModal, setShowSupplierModal] = useState(false);
+const [movementLogs, setMovementLogs] = useState([]);
+
+const initialZones = [
+  { zone: "A", status: "Idle", sku: 0, frozen: true },
+  { zone: "B", status: "Receiving", sku: 5, frozen: false },
+  { zone: "C", status: "Picking", sku: 7, frozen: false },
+  { zone: "D", status: "Restocking", sku: 4, frozen: false },
+];
+
+const statusOptions = [
+  { label: "Idle", color: "red", emoji: "🔴" },
+  { label: "Receiving", color: "green", emoji: "🟢" },
+  { label: "Picking", color: "orange", emoji: "🟠" },
+  { label: "Restocking", color: "gold", emoji: "🟡" },
+];
+
+const [zoneData, setZoneData] = useState(initialZones);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setZoneData(prev =>
+      prev.map(zone => {
+        const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+        const isIdle = randomStatus.label === "Idle";
+        return {
+          ...zone,
+          status: randomStatus.label,
+          emoji: randomStatus.emoji,
+          color: randomStatus.color,
+          sku: isIdle ? zone.sku : zone.sku + Math.floor(Math.random() * 3),
+          frozen: isIdle
+        };
+      })
+    );
+  }, 30000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
+const allLogs = [
+  "📦 SKU-103 moved from Warehouse A → Warehouse B",
+  "📦 SKU-208 scanned at Dock 3",
+  "📦 SKU-451 tagged via RFID at Exit Gate",
+  "📦 SKU-332 loaded onto Truck 2",
+  "📦 SKU-890 relocated from Bay 5 to Bay 1",
+  "📦 SKU-121 received at Inbound Dock",
+  "📦 SKU-555 RFID ping from Packing Station"
+];
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setMovementLogs(prev => {
+      const newLog = allLogs[Math.floor(Math.random() * allLogs.length)];
+      return [newLog, ...prev].slice(0, 3); // keep latest 3 logs
+    });
+  }, 3000); // update every 3 seconds
+
+  return () => clearInterval(interval); // cleanup on unmount
+}, []);
+
 const handleKpiClick = (kpi) => {
   setSelectedKPI(prev =>
     prev.includes(kpi)
@@ -20,14 +83,70 @@ const toggleMenu = (menu) => {
   };
   console.log("Selected KPI:", selectedKPI); // ✅ This is safe! 
 
+ 
   return (
     
     <div className="inventory-container">
-      {/* Header Banner */}
+      {/* Header Banner 
       <div className="banner">
       <img src="/logo.png" alt="Pentana Solutions" className="banner-logo" />
         <h1 className="banner-text">Power Inventory Landing Page</h1>
-      </div>
+      </div>*/}
+      {/*Replace it with this updated version*/}
+      <div className="banner" style={{
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "0.5rem 1rem"
+}}>
+  {/* Left - Logo */}
+  <img src="/logo.png" alt="Power Inventory" className="banner-logo" />
+
+  {/* Center - Title */}
+  <h1 className="banner-text" style={{
+    margin: 0,
+    fontSize: "1.25rem",
+    flexGrow: 1,
+    textAlign: "center"
+  }}>
+    Power Inventory Landing Page
+  </h1>
+
+  {/* Right - Live Feed Summary */}
+  <div style={{
+    backgroundColor: "#e6f4ea",
+    color: "#444",
+    fontSize: "0.65rem",
+    padding: "0.5rem",
+    borderRadius: "6px",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+    width: "230px",
+    maxHeight: "60px",
+    overflowY: "auto"
+  }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+  <strong style={{ fontSize: "0.7rem" }}>📡 Live Feed</strong>
+  <span className="blinking-dot"></span>
+</div>
+
+<ul style={{
+  padding: "0",
+  margin: "0",
+  listStyle: "none",
+  textAlign: "left"
+}}>
+  {movementLogs.map((log, i) => (
+    <li key={i} style={{
+      marginBottom: "4px",
+      textAlign: "left",
+      wordBreak: "break-word"
+    }}>{log}</li>
+  ))}
+</ul>
+
+   </div>
+   </div>
+{/*Replace it with this updated version:*/}
 
       {/* Main Content with Three Sections */}
       <div className="main-content">
@@ -36,13 +155,14 @@ const toggleMenu = (menu) => {
           <ul className="menu">
             <li onClick={() => toggleMenu("overview")}>Inventory Overview & Quick Access</li>
             {activeMenu === "overview" && (
-              <ul className="submenu">
-                <li>Dashboard</li>
-                <li>Search & Lookup</li>
-                <li>Inventory Health</li>
-                <li>Multi-Warehouse View</li>
-              </ul>
-            )}
+  <ul className="submenu">
+    <li>Dashboard</li>
+    <li>Search & Lookup</li>
+    <li>Inventory Health</li>
+    <li>Multi-Warehouse View</li>
+  </ul>
+  
+)}  // ✅ Now correctly closed
 
             <li onClick={() => toggleMenu("stock")}>Stock & Warehouse Management</li>
             {activeMenu === "stock" && (
@@ -89,10 +209,122 @@ const toggleMenu = (menu) => {
                 <li>Integrations</li>
               </ul>
             )}
-          </ul>
+         </ul>  {/* ✅ This closes <ul className="menu"> */}
+         <div className="zone-activity-card">
+  {/* 🏭 Warehouse Zone Activity card content will go here next */}
+</div>
+
+        {/* 🏭 Warehouse Zone Activity Card */}
+<div style={{
+  marginTop: "1rem",
+  fontSize: "0.55rem",
+  backgroundColor: "#ffffff", // bright white for better contrast
+  border: "1px solid #888",
+  borderRadius: "6px",
+  padding: "6px",
+  textAlign: "left",
+  width: "calc(100% - 0.35cm)",
+  boxShadow: "0 0 6px rgba(0,0,0,0.15)"
+}}>
+  <h4 style={{
+    fontSize: "0.65rem",
+    marginBottom: "6px",
+    backgroundColor: "#007bff",
+    color: "white",
+    padding: "4px",
+    borderRadius: "4px"
+  }}>🏭 Warehouse Zone Activity</h4>
+  <table style={{
+    width: "100%",
+    borderCollapse: "collapse",
+    fontSize: "0.5rem"
+  }}>
+    <thead>
+      <tr style={{ backgroundColor: "#f0f0f0" }}>
+        <th style={{ padding: "3px" }}>Zone</th>
+        <th style={{ padding: "3px" }}>Status</th>
+        <th style={{ padding: "3px" }}>SKU Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      {zoneData.map((zone, idx) => (
+        <tr key={idx} style={{
+          backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "#ffffff"
+        }}>
+          <td style={{ padding: "3px", fontWeight: "bold" }}>{zone.zone}</td>
+          <td style={{
+            padding: "3px",
+            color: zone.color,
+            fontWeight: zone.status === "Idle" ? "normal" : "bold"
+          }}>
+            {zone.emoji} {zone.status}
+          </td>
+          <td style={{ padding: "3px" }}>{zone.sku}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+
         </div>
 
        {/* Middle Pane with Two Subsections */}
+       {showSupplierModal && (
+  <div className="modal-overlay">
+    <div className="modal-box">
+      <h3 className="modal-title">🏦 Supplier Score Breakdown</h3>
+      <table className="modal-table">
+        <thead>
+          <tr>
+            <th>Supplier #</th>
+            <th>Name</th>
+            <th>On-Time %</th>
+            <th>Quality</th>
+            <th>Fill Rate %</th>
+            <th>Communication</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SUP-001</td>
+            <td>Global Auto Parts</td>
+            <td>96%</td>
+            <td>4.8</td>
+            <td>98%</td>
+            <td>4.5</td>
+          </tr>
+          <tr>
+            <td>SUP-002</td>
+            <td>Autotech Distributors</td>
+            <td>92%</td>
+            <td>4.5</td>
+            <td>94%</td>
+            <td>4.2</td>
+          </tr>
+          <tr>
+            <td>SUP-003</td>
+            <td>RapidSpare Supplies</td>
+            <td>89%</td>
+            <td>4.3</td>
+            <td>90%</td>
+            <td>4.0</td>
+          </tr>
+          <tr>
+            <td>SUP-004</td>
+            <td>Speedline Components</td>
+            <td>94%</td>
+            <td>4.7</td>
+            <td>95%</td>
+            <td>4.6</td>
+          </tr>
+        </tbody>
+      </table>
+      <button className="close-button" onClick={() => setShowSupplierModal(false)}>Close</button>
+    </div>
+  </div>
+)}
+   
 <div className="middle-pane">
   {/* Upper Middle Pane with 2x2 Grid Dashboard Layout */}
   <div className="upper-middle-pane">
@@ -117,6 +349,7 @@ const toggleMenu = (menu) => {
 <div className="dashboard-card">
   <FinancialMetricsTable />
 </div>
+
     </div>{/*this ends .upper-middle-pane*/}
 
 {/* Lower Middle Pane - Label + 3 KPI Blocks */}
@@ -336,7 +569,8 @@ const toggleMenu = (menu) => {
             <h4>Supplier & Procurement</h4>
             <div className="kpi-list">
               <div title="Overall performance score of suppliers based on delivery accuracy and timeliness.">
-                <a href="#">🏦 Supplier Score: 95%</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setShowSupplierModal(true); }}>
+                  🏦 Supplier Score: 95% </a>
               </div>
               <div title="Average time taken for suppliers to deliver inventory.">
               <a href="#" onClick={(e) => { e.preventDefault(); handleKpiClick("Lead Time"); }}>
