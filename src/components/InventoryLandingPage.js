@@ -544,7 +544,7 @@ const toggleMenu = (menu) => {
               </div>
               <div title="Percentage of stock that has remained unsold for over 90 days.">
               <a href="#" onClick={(e) => { e.preventDefault(); handleKpiClick("Aging Stock"); }}>
-                   ⏳ Aging Stock: 10% (90+ days) </a>
+              <span className="pulsing-dot"></span>⏳ Aging Stock: 10% (90+ days) </a>
 
               </div>
             </div>
@@ -570,11 +570,11 @@ const toggleMenu = (menu) => {
             <div className="kpi-list">
               <div title="Overall performance score of suppliers based on delivery accuracy and timeliness.">
               <a href="#" onClick={(e) => { e.preventDefault(); setShowSupplierModal(true); }}>
-                  🏦 Supplier Score: 95% </a>
+              <span className="pulsing-dot"></span>🏦 Supplier Score: 95% </a>
               </div>
               <div title="Average time taken for suppliers to deliver inventory.">
               <a href="#" onClick={(e) => { e.preventDefault(); handleKpiClick("Lead Time"); }}>
-                     ⏳ Lead Time: Avg. 4.8 days </a>
+                     <span className="pulsing-dot"></span>⏳ Lead Time: Avg. 4.8 days </a>
               </div>
             </div>
           </div>
@@ -602,12 +602,12 @@ const toggleMenu = (menu) => {
               </div>
               <div title="Number of SKUs identified as overstocked by AI analysis.">
               <a href="#" onClick={(e) => { e.preventDefault(); handleKpiClick("AI-Based Overstock Alert"); }}>
-                   ⚠️ AI-Based Overstock Alert: 7 SKUs </a>
+              <a href="#"></a>⚠️ AI-Based Overstock Alert: 7 SKUs </a>
 
               </div>
               <div title="Percentage of inventory flagged as slow-moving by AI models.">
               <a href="#" onClick={(e) => { e.preventDefault(); handleKpiClick("AI-Powered Slow-Moving Stocks"); }}>
-                    ⏳ AI-Powered Slow-Moving Stock: 5.6% </a>
+              <span className="pulsing-dot"></span>⏳ AI-Powered Slow-Moving Stock: 5.6% </a>
 
               </div>
             </div>
