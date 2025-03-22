@@ -162,7 +162,7 @@ const toggleMenu = (menu) => {
     <li>Multi-Warehouse View</li>
   </ul>
   
-)}  // ✅ Now correctly closed
+)}  
 
             <li onClick={() => toggleMenu("stock")}>Stock & Warehouse Management</li>
             {activeMenu === "stock" && (
