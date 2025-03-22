@@ -1,0 +1,39 @@
+.landing-page {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.menu-button {
+  width: 250px;  /* Adjust the width */
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block; /* Ensures buttons do not stretch full width */
+}
+
+.menu-button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the Return button */
+.return-button {
+  width: 250px;  /* Same size as other buttons */
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  background-color: #ff8c00; /* Orange color */
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.return-button:hover {
+  background-color: #cc7000; /* Darker orange on hover */
+}
