@@ -10,6 +10,7 @@ const [activeMenu, setActiveMenu] = useState(null);
 const [selectedKPI, setSelectedKPI] = useState([]); // ✅ Support multiple selections
 const [showSupplierModal, setShowSupplierModal] = useState(false);
 const [movementLogs, setMovementLogs] = useState([]);
+const [refreshRate, setRefreshRate] = useState(10000); // also 10 seconds
 
 const initialZones = [
   { zone: "A", status: "Idle", sku: 0, frozen: true },
@@ -43,10 +44,10 @@ useEffect(() => {
         };
       })
     );
-  }, 30000);
+  }, refreshRate); // 🔁 now dynamic
 
-  return () => clearInterval(interval);
-}, []);
+  return () => clearInterval(interval); // cleanup on unmount
+}, [refreshRate]); // 👈 refreshRate is the dependency
 
 
 const allLogs = [
@@ -214,9 +215,10 @@ const toggleMenu = (menu) => {
   {/* 🏭 Warehouse Zone Activity card content will go here next */}
 </div>
 
-        {/* 🏭 Warehouse Zone Activity Card */}
+{/* 🏭 Warehouse Zone Activity Card */}
 <div style={{
-  marginTop: "1rem",
+ position: "relative",
+ top: "-0.5cm",  // ✅ Moves it up
   fontSize: "0.55rem",
   backgroundColor: "#ffffff", // bright white for better contrast
   border: "1px solid #888",
@@ -528,7 +530,7 @@ const toggleMenu = (menu) => {
 
         {/* Right Pane - Smart KPIs Grouped & Hyperlinked with Tooltips */}
         <div className="right-pane-expanded pane-bg">
-          <h3 className="kpi-header">Inventory KPIs</h3>
+        <h3 className="kpi-header" style={{ marginTop: "-0.1cm" }}>Inventory KPIs</h3>
 
           <div className="kpi-group">
             <h4>Inventory Health & Stock</h4>
