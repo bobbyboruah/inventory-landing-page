@@ -27,6 +27,7 @@
   left: 10px; /* Pushes the logo to the leftmost side */
   top: 50%;
   transform: translateY(-50%); /* Centers the logo vertically */
+  display: none; /* This hides the logo */
 }
 /* Main Layout */
 .main-content {
