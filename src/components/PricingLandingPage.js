@@ -6,11 +6,12 @@ export default function PricingLandingPage() {
 
   {/* Simulation Test Drive states */}
   const [simProduct, setSimProduct] = useState("PN-55601");
-  const [simCost, setSimCost] = useState(70);
-  const [simMarkup, setSimMarkup] = useState(40);
+  const [simCost, setSimCost] = useState("70");
+  const [simMarkup, setSimMarkup] = useState("40");
+  const [simResult, setSimResult] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [chatInput, setChatInput] = useState("");
-const [chatHistory, setChatHistory] = useState([
+  const [chatHistory, setChatHistory] = useState([
   { sender: "bot", message: "Hi there! Ask me anything about pricing or simulation." }
 ]);
 
@@ -23,6 +24,45 @@ const [chatHistory, setChatHistory] = useState([
   ];
   
   const randomTip = tips[Math.floor(Math.random() * tips.length)];
+  const handleChatSubmit = () => {
+    const trimmed = chatInput.trim();
+    if (!trimmed) return;
+  
+    const updated = [...chatHistory, { sender: "user", message: trimmed }];
+    const inputLower = trimmed.toLowerCase();
+  
+    const keywords = [
+      "margin", "supplier", "simulation", "sku", "product", "price",
+      "discount", "bundle", "tariff", "duty", "buying", "cost", "markup",
+      "standard cost", "version", "option", "override", "uom", "pack", "rate",
+      "country", "origin", "list price", "po type", "simulation id",
+      "effective from", "effective to", "exchange rate", "local price",
+      "included", "model price", "net price", "multi-currency",
+      "lead time", "stock", "review", "price increase", "price drop",
+      "simulation result", "supplier upload", "filter", "battery", "engine",
+      "brake", "clutch", "alternator", "radiator", "headlight", "starter"
+    ];
+  
+    const matchedKeyword = keywords.find((kw) => inputLower.includes(kw));
+    let reply = "";
+  
+    if (matchedKeyword) {
+      if (inputLower.includes("margin")) {
+        reply = "Margin for Toyota Fortuner dropped by 5%. CX-5 improved by 3%.";
+      } else if (inputLower.includes("supplier")) {
+        reply = "Supplier 'AutoEx' increased cost by 6% across 38 SKUs.";
+      } else if (inputLower.includes("simulation")) {
+        reply = "Simulation SIM-20342 includes 5 options for Camry.";
+      } else {
+        reply = `✅ You're asking about "${matchedKeyword}". This will be supported in the full version.`;
+      }
+    } else {
+      reply = "🤖 Ask me pricing-related questions like margin, supplier, simulation, etc.";
+    }
+  
+    setChatHistory([...updated, { sender: "bot", message: reply }]);
+    setChatInput("");
+  };
   
 
   return (
@@ -181,60 +221,74 @@ const [chatHistory, setChatHistory] = useState([
 {/* Simulation Test Drive */}
 <div className="bg-white border rounded-lg shadow px-6 py-5">
   <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-  🧪 Price Simulation
-</h2>
-    <div className="grid grid-cols-3 gap-3 text-sm">
-      <div>
-      <button
-  onClick={() => {
-    const price = simCost * (1 + simMarkup / 100);
-    const margin = ((price - simCost) / price) * 100;
+    🧪 Price Simulation
+  </h2>
 
-    const result = `Simulated Price: $${price.toFixed(
-      2
-    )}, Margin: ${margin.toFixed(1)}%`;
-
-    setModalMessage(result);
-  }}
-  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
->
-  🚀 Simulate
-</button>
-
-        <label className="block text-gray-500">Product</label>
-        <input
-  value={simProduct}
-  onChange={(e) => setSimProduct(e.target.value)}
-  className="w-full border rounded px-2 py-1"
-/>
-
-<input
-  type="number"
-  value={simCost}
-  onChange={(e) => setSimCost(Number(e.target.value))}
-  className="w-full border rounded px-2 py-1"
-/>
-
-<input
-  type="number"
-  value={simMarkup}
-  onChange={(e) => setSimMarkup(Number(e.target.value))}
-  className="w-full border rounded px-2 py-1"
-/>
-
-      </div>
-      <div>
-        <label className="block text-gray-500">Cost</label>
-        <input className="w-full border rounded px-2 py-1" defaultValue="70" />
-      </div>
-      <div>
-        <label className="block text-gray-500">Markup %</label>
-        <input className="w-full border rounded px-2 py-1" defaultValue="40" />
-      </div>
+  {/* Non-Editable Info Panel */}
+  <div className="flex justify-between mb-4 text-xs text-gray-600 bg-gray-50 rounded px-3 py-2">
+    <div>
+      <div className="font-medium">Product Code</div>
+      <div>{simProduct}</div>
     </div>
-    <div className="mt-4 bg-blue-50 text-blue-800 p-2 rounded text-sm">
-      💡 Simulated Price: <strong>$98</strong> | Margin: <strong>28%</strong>
+    <div>
+      <div className="font-medium">Competitor Price</div>
+      <div>$102.00</div>
     </div>
+    <div>
+      <div className="font-medium">Last Published Price</div>
+      <div>$95.00</div>
+    </div>
+  </div>
+
+  {/* Editable Fields */}
+  <div className="flex items-center space-x-5">
+  {/* Cost Field */}
+  <div className="flex items-center space-x-1">
+    <label className="text-gray-500 w-10">Cost</label>
+    <input
+      type="number"
+      value={simCost}
+      onChange={(e) => setSimCost(e.target.value)}
+      className="w-16 border rounded px-1 py-0.5 text-xs"
+    />
+  </div>
+
+  {/* Markup Field */}
+  <div className="flex items-center space-x-0.1">
+    <label className="text-gray-500 w-20">Markup %</label>
+    <input
+      type="number"
+      value={simMarkup}
+      onChange={(e) => setSimMarkup(e.target.value)}
+      className="w-24 border rounded px-2 py-0.5 text-xs"
+    />
+  </div>
+
+  {/* Simulate Button */}
+  <div className="ml-auto">
+    <button
+      onClick={() => {
+        const costNum = parseFloat(simCost);
+        const markupNum = parseFloat(simMarkup);
+        const price = costNum * (1 + markupNum / 100);
+        const margin = ((price - costNum) / price) * 100;
+        const result = `Simulated Price: $${price.toFixed(2)}, Margin: ${margin.toFixed(1)}%`;
+        setSimResult(result);
+      }}
+      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+    >
+      🚀 Simulate
+    </button>
+  </div>
+</div>
+
+  {/* Result Display */}
+  {simResult && (
+  <div className="mt-4 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+    {simResult}
+  </div>
+)}
+
   </div>
 {/* add Simulation Price*/}
 
@@ -508,55 +562,21 @@ const [chatHistory, setChatHistory] = useState([
 
 
   <div className="flex space-x-2">
-    <input
-      type="text"
-      value={chatInput}
-      onChange={(e) => setChatInput(e.target.value)}
-      placeholder="Ask me something..."
-      className="flex-1 border rounded px-2 py-1 text-sm"
-    />
+  <input
+  type="text"
+  value={chatInput}
+  onChange={(e) => setChatInput(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") handleChatSubmit();
+  }}
+  placeholder="Ask me something..."
+  className="flex-1 border rounded px-2 py-1 text-sm"
+/>
+
     <button
-      onClick={() => {
-        const trimmed = chatInput.trim();
-        if (!trimmed) return;
       
-        const updated = [...chatHistory, { sender: "user", message: trimmed }];
-        const inputLower = trimmed.toLowerCase();
-      
-        // List of pricing-related keywords
-        const keywords = [
-          "margin", "supplier", "simulation", "sku", "product", "price",
-          "discount", "bundle", "tariff", "duty", "buying", "cost", "markup",
-          "standard cost", "version", "option", "override", "uom", "pack", "rate",
-          "country", "origin", "list price", "po type", "simulation id",
-          "effective from", "effective to", "exchange rate", "local price",
-          "included", "model price", "net price", "multi-currency",
-          "lead time", "stock", "review", "price increase", "price drop",
-          "simulation result", "supplier upload", "filter", "battery", "engine",
-          "brake", "clutch", "alternator", "radiator", "headlight", "starter"
-        ];
-      
-        const matchedKeyword = keywords.find(kw => inputLower.includes(kw));
-        let reply = "";
-      
-        if (matchedKeyword) {
-          if (inputLower.includes("margin")) {
-            reply = "Margin for Toyota Fortuner dropped by 5%. CX-5 improved by 3%.";
-          } else if (inputLower.includes("supplier")) {
-            reply = "Supplier 'AutoEx' increased cost by 6% across 38 SKUs.";
-          } else if (inputLower.includes("simulation")) {
-            reply = "Simulation SIM-20342 includes 5 options for Camry.";
-          } else {
-            reply = `✅ You're asking about "${matchedKeyword}". This will be supported in the full version.`;
-          }
-        } else {
-          reply = "🤖 Ask me pricing-related questions like margin, supplier, simulation, etc.";
-        }
-      
-        setChatHistory([...updated, { sender: "bot", message: reply }]);
-        setChatInput("");
-      }}
-      
+      onClick={handleChatSubmit}
+
       className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
     >
       Send
