@@ -9,6 +9,11 @@ export default function PricingLandingPage() {
   const [simCost, setSimCost] = useState(70);
   const [simMarkup, setSimMarkup] = useState(40);
   const [searchInput, setSearchInput] = useState("");
+  const [chatInput, setChatInput] = useState("");
+const [chatHistory, setChatHistory] = useState([
+  { sender: "bot", message: "Hi there! Ask me anything about pricing or simulation." }
+]);
+
   const tips = [
     "Don’t chase volume with price. Protect your margin.",
     "Simulate before you publish to avoid pricing shocks.",
@@ -57,7 +62,7 @@ export default function PricingLandingPage() {
 
 
           <span className="text-gray-600">🔔</span>
-          <span className="text-gray-600">👤 John</span>
+          <span className="text-gray-600">👤 Bobby</span>
         </div>
       </header>
       {/* Pricing Tips */}
@@ -72,11 +77,9 @@ export default function PricingLandingPage() {
         <aside className="w-1/4 border-r p-4 space-y-4 bg-white">
           
         <div className="bg-white border rounded-lg shadow px-4 py-3">
-        <div className="bg-white border rounded-lg shadow p-4 hover:bg-yellow-200 cursor-pointer transition">
-  
-</div>
+        
 
-<h2 className="text-xs font-semibold ...">  text-gray-600 uppercase mb-3 border-b pb-1">📋 Smart Watchlist</h2>
+<h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">📋 Smart Watchlist</h2>
   <ul className="space-y-2">
   {[
     {
@@ -97,6 +100,13 @@ export default function PricingLandingPage() {
       emoji: "🎯",
       color: "text-yellow-600",
     },
+    {
+      label: "Simulation Approval Pending",
+      change: "(Count=5 | Due:27-Mar-2025)",
+      emoji: "📥",
+      color: "text-orange-600",
+    },
+    
   ].map((item, index) => (
     <li
       key={index}
@@ -234,7 +244,7 @@ export default function PricingLandingPage() {
         <main className="flex-1 p-6 space-y-4">
         <div className="bg-white border rounded-lg shadow px-6 py-5">
         <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-  📅 My Tasks Timeline
+  📅 Dairy
 </h2>
 
   <ul className="space-y-3">
@@ -270,7 +280,7 @@ export default function PricingLandingPage() {
 
 <div className="bg-white border rounded-lg shadow px-6 py-5">
 <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-  🔍 <span title="Tracks pricing deltas across SKUs and options.">What Changed</span>
+  🔍 <span title="Tracks pricing deltas across SKUs and options.">Recent Changed</span>
 </h2>
 
 
@@ -312,18 +322,21 @@ export default function PricingLandingPage() {
 </div>
 
 <div className="bg-white border rounded-lg shadow px-6 py-5">
-<h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-title="Visualizes margin impact of pricing actions."
+  <h2
+    className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1"
+    title="Visualizes margin impact of pricing actions."
+  >
+    📊 Impact Explorer
+  </h2>
 
-  📊 Impact Explorer
-</h2>
-
-  <table className="w-full text-sm">
+  <table className="w-full text-sm table-auto">
     <thead>
       <tr className="text-gray-500 text-left border-b">
         <th className="pb-1">Brand</th>
         <th className="pb-1">Model</th>
         <th className="pb-1">Margin Δ</th>
+        <th className="pb-1">Reason</th>
+        <th className="pb-1">Action-able</th>
       </tr>
     </thead>
     <tbody>
@@ -331,43 +344,110 @@ title="Visualizes margin impact of pricing actions."
         <td className="py-1">Toyota</td>
         <td>Fortuner</td>
         <td className="text-red-600 font-medium">-5%</td>
+        <td className="text-gray-700">Supplier cost increased by 4%</td>
+        <td>
+          <button
+            onClick={() =>
+              setModalMessage(
+                "📝 Action: Review Supplier Terms\n\nMargin drop triggered by cost spike from AutoEx.\nSuggested: Re-negotiate contract or consider alternate supplier."
+              )
+            }
+            className="text-blue-700 underline hover:text-blue-900"
+          >
+            Review supplier terms
+          </button>
+        </td>
       </tr>
       <tr className="border-b">
         <td className="py-1">Mazda</td>
         <td>CX-5</td>
         <td className="text-green-600 font-medium">+3%</td>
+        <td className="text-gray-700">Bundle pricing improved</td>
+        <td>
+          <button
+            onClick={() =>
+              setModalMessage(
+                "✅ Action: Replicate Strategy\n\nThis pricing bundle improved margin.\nApply similar bundling logic to other models with low margin."
+              )
+            }
+            className="text-blue-700 underline hover:text-blue-900"
+          >
+            Replicate to other SKUs
+          </button>
+        </td>
       </tr>
       <tr>
         <td className="py-1">Nissan</td>
         <td>Navara</td>
         <td className="text-red-500 font-medium">-2%</td>
+        <td className="text-gray-700">Currency impact on imports</td>
+        <td>
+          <button
+            onClick={() =>
+              setModalMessage(
+                "📊 Action: Run FX-Adjusted Simulation\n\nCurrency depreciation increased costs.\nRun new simulation with updated exchange rate to evaluate margin impact."
+              )
+            }
+            className="text-blue-700 underline hover:text-blue-900"
+          >
+            Run simulation with adjusted FX
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <div className="bg-white border rounded-lg shadow px-6 py-5">
-<h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-title="Shows pricing changes awaiting stakeholder approval."
+  <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
+    📌 Pending Approvals Radar
+  </h2>
 
-  📌 Pending Approvals Radar
-</h2>
-
-  <ul className="space-y-2 text-sm">
-    <li className="flex justify-between items-center">
-      <div>
-        📝 <strong>Sim #20300</strong> – Sam
-      </div>
-      <span className="text-red-600 text-xs">4 days idle</span>
-    </li>
-    <li className="flex justify-between items-center">
-      <div>
-        📦 <strong>Supplier Price PN-8802</strong> – Daisy
-      </div>
-      <span className="text-red-600 text-xs">7 days idle</span>
-    </li>
-  </ul>
+  <table className="w-full text-sm">
+    <thead>
+      <tr className="text-gray-500 text-left border-b">
+        <th className="pb-1">Type</th>
+        <th className="pb-1">Owner</th>
+        <th className="pb-1">Idle Days</th>
+        <th className="pb-1">Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {[
+        {
+          type: "Simulation Approval – SIM-20400",
+          owner: "Antony C.",
+          idle: "4 days",
+          notes:
+            "Waiting on regional price validation for Ford Ranger variant.",
+        },
+        {
+          type: "Supplier Upload – PN-8802",
+          owner: "Darryl H.",
+          idle: "7 days",
+          notes:
+            "Bulk upload with conflicting SKUs, flagged by data QA.",
+        },
+        {
+          type: "Manual Override – PN-44100",
+          owner: "Glen S.",
+          idle: "2 days",
+          notes:
+            "Urgent override request – linked to OEM promotional pricing.",
+        },
+      ].map((item, idx) => (
+        <tr key={idx} className="border-b hover:bg-gray-50">
+          <td className="py-1">{item.type}</td>
+          <td>{item.owner}</td>
+          <td className="text-red-600">{item.idle}</td>
+          <td className="text-xs text-gray-700">{item.notes}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 </div>
+
+
 <div className="flex space-x-4">
   {/* 🔥 Pricing Activity Heatmap */}
   <div className="w-2/3 bg-white border rounded-lg shadow px-6 py-5">
@@ -405,21 +485,85 @@ title="Shows pricing changes awaiting stakeholder approval."
       </li>
     </ul>
   </div>
+{/* 🎤 Ask Pricing Assistant (Chatbot UI) */}
+<div className="w-1/3 bg-white border rounded-lg shadow px-4 py-5 flex flex-col justify-between">
+  <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
+    🎤 Ask Pricing Assistant
+  </h2>
 
-  {/* 🎤 Ask Pricing Assistant */}
-  <div className="w-1/3 bg-white border rounded-lg shadow px-6 py-5 text-center flex flex-col justify-between">
-    <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
-      🎤 Ask Pricing Assistant
-    </h2>
-    <button
-      onClick={() =>
-        setModalMessage("Showing all SKUs with margin drop >10%...")
-      }
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+  <div className="flex-1 mb-3 space-y-2 overflow-y-auto pr-2" style={{ maxHeight: "12rem" }}>
+  {chatHistory.map((chat, index) => (
+    <div
+      key={index}
+      className={`p-2 rounded text-sm ${
+        chat.sender === "bot"
+          ? "bg-gray-100 text-left text-gray-800"
+          : "bg-blue-100 text-right text-blue-800"
+      }`}
     >
-      🔍 Show all SKUs with margin drop &gt;10%
+      {chat.message}
+    </div>
+  ))}
+</div>
+
+
+  <div className="flex space-x-2">
+    <input
+      type="text"
+      value={chatInput}
+      onChange={(e) => setChatInput(e.target.value)}
+      placeholder="Ask me something..."
+      className="flex-1 border rounded px-2 py-1 text-sm"
+    />
+    <button
+      onClick={() => {
+        const trimmed = chatInput.trim();
+        if (!trimmed) return;
+      
+        const updated = [...chatHistory, { sender: "user", message: trimmed }];
+        const inputLower = trimmed.toLowerCase();
+      
+        // List of pricing-related keywords
+        const keywords = [
+          "margin", "supplier", "simulation", "sku", "product", "price",
+          "discount", "bundle", "tariff", "duty", "buying", "cost", "markup",
+          "standard cost", "version", "option", "override", "uom", "pack", "rate",
+          "country", "origin", "list price", "po type", "simulation id",
+          "effective from", "effective to", "exchange rate", "local price",
+          "included", "model price", "net price", "multi-currency",
+          "lead time", "stock", "review", "price increase", "price drop",
+          "simulation result", "supplier upload", "filter", "battery", "engine",
+          "brake", "clutch", "alternator", "radiator", "headlight", "starter"
+        ];
+      
+        const matchedKeyword = keywords.find(kw => inputLower.includes(kw));
+        let reply = "";
+      
+        if (matchedKeyword) {
+          if (inputLower.includes("margin")) {
+            reply = "Margin for Toyota Fortuner dropped by 5%. CX-5 improved by 3%.";
+          } else if (inputLower.includes("supplier")) {
+            reply = "Supplier 'AutoEx' increased cost by 6% across 38 SKUs.";
+          } else if (inputLower.includes("simulation")) {
+            reply = "Simulation SIM-20342 includes 5 options for Camry.";
+          } else {
+            reply = `✅ You're asking about "${matchedKeyword}". This will be supported in the full version.`;
+          }
+        } else {
+          reply = "🤖 Ask me pricing-related questions like margin, supplier, simulation, etc.";
+        }
+      
+        setChatHistory([...updated, { sender: "bot", message: reply }]);
+        setChatInput("");
+      }}
+      
+      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+    >
+      Send
     </button>
   </div>
+</div>
+  
 </div>
 
 
