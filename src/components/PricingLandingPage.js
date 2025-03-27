@@ -223,96 +223,53 @@ export default function PricingLandingPage() {
 
 </div>
 {/* 🔧 Price Simulation Card */}
-<div className="bg-white border rounded-lg shadow px-6 py-5">
-  <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
+<div className="bg-white border rounded-lg shadow px-4 py-3 text-xs">
+  <h2 className="text-xs font-bold text-gray-600 uppercase mb-2 border-b pb-1">
     🧪 Price Simulation
   </h2>
 
-  {/* Non-Editable Info Panel */}
-  <div className="flex justify-between mb-4 text-xs text-gray-600 bg-gray-50 rounded px-3 py-2">
+  {/* Info Row */}
+  <div className="flex justify-between mb-2 bg-gray-50 rounded px-2 py-2">
     <div>
-      <div className="font-medium">Product Code</div>
+      <div className="font-medium">Product</div>
       <div>{simProduct}</div>
     </div>
     <div>
-      <div className="font-medium">Competitor Price</div>
+      <div className="font-medium">Competitor</div>
       <div>$102.00</div>
     </div>
     <div>
-      <div className="font-medium">Last Published Price</div>
+      <div className="font-medium">Last Published</div>
       <div>$95.00</div>
     </div>
   </div>
 
-  {/* Editable Fields with Validation */}
-  <div className="space-y-3 text-xs">
-    <div className="flex items-center space-x-2">
-      <label className="w-24 text-gray-500">Cost</label>
-      <input
-        type="number"
-        value={simCost}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (!isNaN(val) && val >= 0) setSimCost(val);
-        }}
-        className="w-24 border rounded px-2 py-1"
-      />
-    </div>
-
-    <div className="flex items-center space-x-2">
-      <label className="w-24 text-gray-500">Markup %</label>
-      <input
-        type="number"
-        value={simMarkup}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (!isNaN(val) && val >= 0 && val <= 100) setSimMarkup(val);
-        }}
-        className="w-24 border rounded px-2 py-1"
-      />
-    </div>
-
-    <div className="flex items-center space-x-2">
-      <label className="w-24 text-gray-500">Shipping</label>
-      <input
-        type="number"
-        value={shipping}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (!isNaN(val) && val >= 0) setShipping(val);
-        }}
-        className="w-24 border rounded px-2 py-1"
-      />
-    </div>
-
-    <div className="flex items-center space-x-2">
-      <label className="w-24 text-gray-500">GST %</label>
-      <input
-        type="number"
-        value={gst}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (!isNaN(val) && val >= 0 && val <= 100) setGst(val);
-        }}
-        className="w-24 border rounded px-2 py-1"
-      />
-    </div>
-
-    <div className="flex items-center space-x-2">
-      <label className="w-24 text-gray-500">FX Rate</label>
-      <input
-        type="number"
-        value={fxRate}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (!isNaN(val) && val > 0) setFxRate(val);
-        }}
-        className="w-24 border rounded px-2 py-1"
-      />
-    </div>
+  {/* Input Fields */}
+  <div className="space-y-1.5 text-xs">
+    {[
+      { label: "Cost", value: simCost, set: setSimCost, placeholder: "70" },
+      { label: "Markup %", value: simMarkup, set: setSimMarkup, placeholder: "40" },
+      { label: "Shipping", value: shipping, set: setShipping, placeholder: "5" },
+      { label: "GST %", value: gst, set: setGst, placeholder: "10" },
+      { label: "FX Rate", value: fxRate, set: setFxRate, placeholder: "1.0" }
+    ].map((field, i) => (
+      <div key={i} className="flex items-center space-x-1">
+        <label className="w-20 text-gray-500">{field.label}</label>
+        <input
+          type="number"
+          value={field.value}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (!isNaN(val)) field.set(val);
+          }}
+          className="w-20 border rounded px-1 py-0.5 text-xs"
+          placeholder={field.placeholder}
+        />
+      </div>
+    ))}
 
     {/* Simulate Button */}
-    <div className="flex justify-end pt-2">
+    <div className="pt-1 flex justify-end">
       <button
         onClick={() => {
           const costNum = parseFloat(simCost);
@@ -322,13 +279,10 @@ export default function PricingLandingPage() {
           const fxNum = parseFloat(fxRate);
 
           if (
-            isNaN(costNum) ||
-            isNaN(markupNum) ||
-            isNaN(shippingNum) ||
-            isNaN(gstNum) ||
-            isNaN(fxNum)
+            isNaN(costNum) || isNaN(markupNum) || isNaN(shippingNum) ||
+            isNaN(gstNum) || isNaN(fxNum)
           ) {
-            setSimResult("⚠️ Please enter all valid numeric inputs.");
+            setSimResult("⚠️ Please enter valid numbers in all fields.");
             return;
           }
 
@@ -338,20 +292,17 @@ export default function PricingLandingPage() {
           const finalPrice = priceExGST + gstAmount;
           const margin = ((finalPrice - baseCost) / finalPrice) * 100;
 
-          const result = `💡 Simulated Price: $${finalPrice.toFixed(2)} | Margin: ${margin.toFixed(
-            1
-          )}%`;
-          setSimResult(result);
+          setSimResult(`💡 Simulated Price: $${finalPrice.toFixed(2)} | Margin: ${margin.toFixed(1)}%`);
         }}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-xs"
+        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
       >
         🚀 Simulate
       </button>
     </div>
 
-    {/* Result Display */}
+    {/* Result */}
     {simResult && (
-      <div className="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+      <div className="mt-2 bg-blue-50 text-blue-800 p-2 rounded text-xs">
         {simResult}
       </div>
     )}
