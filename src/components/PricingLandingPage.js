@@ -11,6 +11,10 @@ export default function PricingLandingPage() {
   const [simResult, setSimResult] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [chatInput, setChatInput] = useState("");
+  const [shipping, setShipping] = useState("");
+  const [gst, setGst] = useState("");
+  const [fxRate, setFxRate] = useState("");
+
   const [chatHistory, setChatHistory] = useState([
   { sender: "bot", message: "Hi there! Ask me anything about pricing or simulation." }
 ]);
@@ -218,7 +222,7 @@ export default function PricingLandingPage() {
 </ul>
 
 </div>
-{/* Simulation Test Drive */}
+{/* 🔧 Price Simulation Card */}
 <div className="bg-white border rounded-lg shadow px-6 py-5">
   <h2 className="text-sm font-bold text-gray-600 uppercase mb-3 border-b pb-1">
     🧪 Price Simulation
@@ -240,56 +244,121 @@ export default function PricingLandingPage() {
     </div>
   </div>
 
-  {/* Editable Fields */}
-  <div className="flex items-center space-x-5">
-  {/* Cost Field */}
-  <div className="flex items-center space-x-1">
-    <label className="text-gray-500 w-10">Cost</label>
-    <input
-      type="number"
-      value={simCost}
-      onChange={(e) => setSimCost(e.target.value)}
-      className="w-16 border rounded px-1 py-0.5 text-xs"
-    />
-  </div>
+  {/* Editable Fields with Validation */}
+  <div className="space-y-3 text-xs">
+    <div className="flex items-center space-x-2">
+      <label className="w-24 text-gray-500">Cost</label>
+      <input
+        type="number"
+        value={simCost}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!isNaN(val) && val >= 0) setSimCost(val);
+        }}
+        className="w-24 border rounded px-2 py-1"
+      />
+    </div>
 
-  {/* Markup Field */}
-  <div className="flex items-center space-x-0.1">
-    <label className="text-gray-500 w-20">Markup %</label>
-    <input
-      type="number"
-      value={simMarkup}
-      onChange={(e) => setSimMarkup(e.target.value)}
-      className="w-24 border rounded px-2 py-0.5 text-xs"
-    />
-  </div>
+    <div className="flex items-center space-x-2">
+      <label className="w-24 text-gray-500">Markup %</label>
+      <input
+        type="number"
+        value={simMarkup}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!isNaN(val) && val >= 0 && val <= 100) setSimMarkup(val);
+        }}
+        className="w-24 border rounded px-2 py-1"
+      />
+    </div>
 
-  {/* Simulate Button */}
-  <div className="ml-auto">
-    <button
-      onClick={() => {
-        const costNum = parseFloat(simCost);
-        const markupNum = parseFloat(simMarkup);
-        const price = costNum * (1 + markupNum / 100);
-        const margin = ((price - costNum) / price) * 100;
-        const result = `Simulated Price: $${price.toFixed(2)}, Margin: ${margin.toFixed(1)}%`;
-        setSimResult(result);
-      }}
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-    >
-      🚀 Simulate
-    </button>
+    <div className="flex items-center space-x-2">
+      <label className="w-24 text-gray-500">Shipping</label>
+      <input
+        type="number"
+        value={shipping}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!isNaN(val) && val >= 0) setShipping(val);
+        }}
+        className="w-24 border rounded px-2 py-1"
+      />
+    </div>
+
+    <div className="flex items-center space-x-2">
+      <label className="w-24 text-gray-500">GST %</label>
+      <input
+        type="number"
+        value={gst}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!isNaN(val) && val >= 0 && val <= 100) setGst(val);
+        }}
+        className="w-24 border rounded px-2 py-1"
+      />
+    </div>
+
+    <div className="flex items-center space-x-2">
+      <label className="w-24 text-gray-500">FX Rate</label>
+      <input
+        type="number"
+        value={fxRate}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!isNaN(val) && val > 0) setFxRate(val);
+        }}
+        className="w-24 border rounded px-2 py-1"
+      />
+    </div>
+
+    {/* Simulate Button */}
+    <div className="flex justify-end pt-2">
+      <button
+        onClick={() => {
+          const costNum = parseFloat(simCost);
+          const markupNum = parseFloat(simMarkup);
+          const shippingNum = parseFloat(shipping);
+          const gstNum = parseFloat(gst);
+          const fxNum = parseFloat(fxRate);
+
+          if (
+            isNaN(costNum) ||
+            isNaN(markupNum) ||
+            isNaN(shippingNum) ||
+            isNaN(gstNum) ||
+            isNaN(fxNum)
+          ) {
+            setSimResult("⚠️ Please enter all valid numeric inputs.");
+            return;
+          }
+
+          const baseCost = (costNum + shippingNum) * fxNum;
+          const priceExGST = baseCost * (1 + markupNum / 100);
+          const gstAmount = priceExGST * (gstNum / 100);
+          const finalPrice = priceExGST + gstAmount;
+          const margin = ((finalPrice - baseCost) / finalPrice) * 100;
+
+          const result = `💡 Simulated Price: $${finalPrice.toFixed(2)} | Margin: ${margin.toFixed(
+            1
+          )}%`;
+          setSimResult(result);
+        }}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-xs"
+      >
+        🚀 Simulate
+      </button>
+    </div>
+
+    {/* Result Display */}
+    {simResult && (
+      <div className="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+        {simResult}
+      </div>
+    )}
   </div>
 </div>
 
-  {/* Result Display */}
-  {simResult && (
-  <div className="mt-4 bg-blue-50 text-blue-800 p-2 rounded text-xs">
-    {simResult}
-  </div>
-)}
 
-  </div>
 {/* add Simulation Price*/}
 
         </aside>
